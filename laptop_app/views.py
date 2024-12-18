@@ -37,7 +37,7 @@ def analyze_laptops(request):
         for laptop in low_10_laptops
     ]
 
-    # Объединяем данные
+    # Объединяе мданные
     response_data = {
         'top_10_laptops': top_10_data,
         'low_10_laptops': low_10_data
