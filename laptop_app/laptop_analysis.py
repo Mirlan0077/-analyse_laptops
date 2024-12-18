@@ -5,33 +5,35 @@ class LaptopAnalysis:
         self.laptops = Laptop.objects.all()
 
     def get_top_10_laptops(self):
-        # Сортируем ноутбуки по рейтингу в порядке убывания и берем топ-10
         return self.laptops.filter(rating__isnull=False).order_by('-rating')[:10]
 
     def get_low_10_laptops(self):
-        # Сортируем ноутбуки по рейтингу в порядке возрастания и берем 10 худших
         return self.laptops.filter(rating__isnull=False).order_by('rating')[:10]
 
-
     def get_manufacturers(self, laptops):
-        # Получаем список производителей ноутбуков
         return {laptop.brand for laptop in laptops}
 
-    def analyze(self):
+    def get_all_manufacturers(self):
+        return {laptop.brand for laptop in self.laptops}
+
+    def analyze_in_parallel(self):
         top_10 = self.get_top_10_laptops()
         low_10 = self.get_low_10_laptops()
-        top_manufacturers = self.get_manufacturers(top_10)
-        low_manufacturers = self.get_manufacturers(low_10)
+
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            futures = [
+                executor.submit(self.get_manufacturers, top_10),
+                executor.submit(self.get_manufacturers, low_10),
+                executor.submit(self.get_all_manufacturers)
+            ]
+            top_manufacturers, low_manufacturers, all_manufacturers = [
+                future.result() for future in futures
+            ]
 
         return {
-            'top_10_laptops': [
-                {"name": laptop.name, "brand": laptop.brand, "price": laptop.price, "year": laptop.year}
-                for laptop in top_10
-            ],
-            'low_10_laptops': [
-                {"name": laptop.name, "brand": laptop.brand, "price": laptop.price, "year": laptop.year}
-                for laptop in low_10
-            ],
-            'top_manufacturers': list(top_manufacturers),
-            'low_manufacturers': list(low_manufacturers)
+            'top_10_laptops': list(top_10),
+            'low_10_laptops': list(low_10),
+            'top_manufacturers': top_manufacturers,
+            'low_manufacturers': low_manufacturers,
+            'all_manufacturers': all_manufacturers  # Все производители
         }

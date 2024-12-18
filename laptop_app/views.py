@@ -13,6 +13,7 @@ def analyze_laptops(request):
     # Получаем топ-10 и низ-10 ноутбуков
     top_10_laptops = analyzer.get_top_10_laptops()
     low_10_laptops = analyzer.get_low_10_laptops()
+    all_manufacturers = analyzer.get_all_manufacturers()
 
     # Форматируем данные для ответа (например, получаем нужные атрибуты)
     top_10_data = [
@@ -40,7 +41,8 @@ def analyze_laptops(request):
     # Объединяе мданные
     response_data = {
         'top_10_laptops': top_10_data,
-        'low_10_laptops': low_10_data
+        'low_10_laptops': low_10_data,
+        'all_manufacturers': list(all_manufacturers)
     }
 
     # Возвращаем красиво отформатированный JSON
