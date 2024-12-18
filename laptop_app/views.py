@@ -45,3 +45,6 @@ def analyze_laptops(request):
 
     # Возвращаем красиво отформатированный JSON
     return JsonResponse(response_data, json_dumps_params={'indent': 4})
+
+#Этот код использует параллельное выполнение с помощью библиотеки concurrent.futures
+# для улучшения производительности в анализе ноутбуков.
