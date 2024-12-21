@@ -1,5 +1,4 @@
 import concurrent.futures
-
 from laptop_app.models import Laptop
 
 
