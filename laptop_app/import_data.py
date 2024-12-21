@@ -15,6 +15,3 @@ def import_laptops_from_csv(file_path):
                 price=float(row['price'])
             )
 
-
-#Этот код используется для импорта данных о ноутбуках из CSV-файла
-# в базу данных Django, конкретно в модель Laptop приложения laptop_app.

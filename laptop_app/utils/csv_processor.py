@@ -6,7 +6,6 @@ def process_csv(file_path):
 
     data = pd.read_csv(file_path)
 
-    # Переименование колонок для соответствия модели
     data = data.rename(columns={
         'Name': 'name',
         'PriceEUR': 'price_eur',
@@ -43,13 +42,11 @@ def process_csv(file_path):
         'Category': 'category'
     })
 
-    # Обработка пустых значений
     data['battery_life_h'] = data['battery_life_h'].fillna(0)
     data['weight_kg'] = data['weight_kg'].replace(0, 1.0)
     data['ram_memory'] = data['ram_memory'].fillna(0)
     data['internal_storage_gb'] = data['internal_storage_gb'].fillna(0)
 
-    # Обработка возможных значений NaN для других полей, если это нужно
     data['display_inch'] = data['display_inch'].fillna(0)
     data['display_cm'] = data['display_cm'].fillna(0)
     data['display_resolution'] = data['display_resolution'].fillna('Unknown')
