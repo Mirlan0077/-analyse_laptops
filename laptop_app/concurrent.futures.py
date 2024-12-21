@@ -1,5 +1,8 @@
 import concurrent.futures
 
+from laptop_app.models import Laptop
+
+
 class LaptopAnalysis:
     def __init__(self):
         self.laptops = Laptop.objects.all()
