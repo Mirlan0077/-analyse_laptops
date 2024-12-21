@@ -1,0 +1,8 @@
+pip~=24.0
+distro~=1.9.0
+pillow~=10.4.0
+Jinja2~=3.1.4
+filelock~=3.13.1
+pandas~=2.2.3
+Django~=5.0.6
+openai~=1.58.1
