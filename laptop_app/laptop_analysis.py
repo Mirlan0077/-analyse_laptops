@@ -6,12 +6,6 @@ class LaptopAnalysis:
     def __init__(self):
         self.laptops = Laptop.objects.all()
 
-    def update_ratings(self):
-        """Обновляет рейтинги для всех ноутбуков."""
-        for laptop in self.laptops:
-            laptop.rating = laptop.calculate_score()
-            laptop.save()
-
     def get_top_10_laptops(self):
         return self.laptops.filter(rating__isnull=False).order_by('-rating')[:10]
 
