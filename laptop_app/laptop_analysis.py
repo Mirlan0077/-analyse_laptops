@@ -19,7 +19,7 @@ class LaptopAnalysis:
         return {laptop.brand for laptop in self.laptops}
 
     def analyze_in_parallel(self):
-        self.update_ratings()  # Обновляем рейтинги перед анализом
+        self.update_ratings()
 
         top_10 = self.get_top_10_laptops()
         low_10 = self.get_low_10_laptops()
