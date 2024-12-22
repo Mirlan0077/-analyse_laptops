@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 
 class Laptop(models.Model):
@@ -38,20 +40,28 @@ class Laptop(models.Model):
     rating = models.FloatField(null=True, blank=True)
 
     def calculate_score(self):
-        """Вычисляет рейтинг ноутбука."""
         try:
-            ram_factor = (self.ram_memory / self.price_eur) * 0.4 if self.price_eur else 0
-            storage_factor = (self.internal_storage_gb / self.price_eur) * 0.3 if self.price_eur else 0
+            ram_factor = (self.ram_memory / self.price_eur) * 0.4 if self.price_eur and self.price_eur > 0 else 0
+            storage_factor = (
+                                         self.internal_storage_gb / self.price_eur) * 0.3 if self.price_eur and self.price_eur > 0 else 0
             weight_factor = (1 / self.weight_kg) * 0.2 if self.weight_kg and self.weight_kg > 0 else 0
             battery_factor = (self.battery_life_h / 24) * 0.1 if self.battery_life_h else 0
             return ram_factor + storage_factor + weight_factor + battery_factor
         except ZeroDivisionError:
             return 0
 
-    def save(self, *args, **kwargs):
-        """Автоматически обновляет рейтинг перед сохранением."""
-        self.rating = self.calculate_score()
-        super().save(*args, **kwargs)
-
     def __str__(self):
         return f"{self.name} ({self.cpu_processor})"
+
+    def clean(self):
+        if self.weight_kg and self.weight_kg <= 0:
+            raise ValueError("Weight must be positive.")
+        if self.price_eur and self.price_eur < 0:
+            raise ValueError("Price must be non-negative.")
+
+
+@receiver(pre_save, sender=Laptop)
+def calculate_rating(sender, instance, **kwargs):
+    if not instance.pk or Laptop.objects.filter(pk=instance.pk).first().rating != instance.calculate_score():
+        instance.rating = instance.calculate_score()
+
